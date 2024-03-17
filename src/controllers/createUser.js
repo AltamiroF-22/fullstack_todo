@@ -52,12 +52,6 @@ class User {
     }
   }
 
-  //--------------------  logout--------------------------------
-  logout(req, res) {
-    req.session.destroy();
-    res.json({ message: "successfully logged out" });
-  }
-
   //-------------------- update picture--------------------------------
   async updatePicture(req, res) {
     const userId = req.params.id;

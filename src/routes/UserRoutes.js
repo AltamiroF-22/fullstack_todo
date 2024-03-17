@@ -25,9 +25,6 @@ router.post(
 // Login user
 router.post("/login", UserMiddleware.checkLogin, UserController.login);
 
-// Logout user
-router.get("/logout", Token.check, UserController.logout);
-
 //search user
 router.get("/user-search", Token.check, UserController.searchUsersByName);
 
