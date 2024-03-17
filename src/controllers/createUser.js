@@ -52,6 +52,12 @@ class User {
     }
   }
 
+  //--------------------  logout--------------------------------
+  logout(req, res) {
+    req.session.destroy();
+    res.json({ message: "successfully logged out" });
+  }
+
   //-------------------- update picture--------------------------------
   async updatePicture(req, res) {
     const userId = req.params.id;
@@ -82,13 +88,44 @@ class User {
   //-------------------- search user by name--------------------------------
   async searchUsersByName(req, res) {
     const { name } = req.query;
-  
+
     try {
-      const users = await UserModel.find({ name: { $regex: new RegExp(name, "i") } });
-  
+      const users = await UserModel.find({
+        name: { $regex: new RegExp(name, "i") },
+      });
+
       res.status(200).json({ users });
     } catch (error) {
-      res.status(500).json({ message: "Error searching users", error: error.message });
+      res
+        .status(500)
+        .json({ message: "Error searching users", error: error.message });
+    }
+  }
+
+  //-------------------- add friend --------------------------------
+  async addFriend(req, res) {
+    const { name } = req.query;
+
+    try {
+      const newFriend = await UserModel.findOne({ name: name });
+
+      if (!newFriend) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const newFriendId = newFriend._id;
+
+      const user = await UserModel.findByIdAndUpdate(
+        req.user.id,
+        { $addToSet: { friends: newFriendId } },
+        { new: true }
+      );
+
+      res.status(200).json({ message: "Friend added successfully", user });
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: "Error adding friend", error: error.message });
     }
   }
 }

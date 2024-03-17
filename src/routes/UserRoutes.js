@@ -9,7 +9,6 @@ const TaskController = require("../controllers/createTasks");
 // middleware
 const UserMiddleware = require("../middlewares/userMiddleware");
 const Token = require("../middlewares/checkToken");
-const userMiddleware = require("../middlewares/userMiddleware");
 
 router.get("/test", (req, res) => {
   res.status(200).json({ message: "OK" });
@@ -26,8 +25,14 @@ router.post(
 // Login user
 router.post("/login", UserMiddleware.checkLogin, UserController.login);
 
+// Logout user
+router.get("/logout", Token.check, UserController.logout);
+
 //search user
 router.get("/user-search", Token.check, UserController.searchUsersByName);
+
+//add friends
+router.put("/user-search", Token.check, UserController.addFriend);
 
 // Update Img Profile
 router.patch(

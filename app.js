@@ -14,9 +14,10 @@ connectToDatabase();
 app.use(express.json());
 
 // Rotas
-app.use('/', userRoutes);
-
+app.use("/", userRoutes);
 
 // Inicialização do servidor
 const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+app.listen(PORT, () =>
+  console.log(`Server running on http://localhost:${PORT}`)
+);
