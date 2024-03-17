@@ -2,6 +2,7 @@ const UserModel = require("../models/User");
 const bcrypt = require("bcrypt");
 
 class UserMiddleware {
+  //-------------------- create user--------------------------------
   async checkCreate(req, res, next) {
     const { name, email, password } = req.body;
 
@@ -29,6 +30,7 @@ class UserMiddleware {
     }
   }
 
+  //-------------------- check login--------------------------------
   async checkLogin(req, res, next) {
     const { email, password } = req.body;
     if (!email) {

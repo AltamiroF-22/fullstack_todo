@@ -10,10 +10,15 @@ class Token {
     }
     try {
       const secret = process.env.SECRET;
-      jwt.verify(token, secret);
+      const decodedToken = jwt.verify(token, secret);
+
+      const userId = decodedToken.id;
+
+      req.user = { id: userId };
+
       next();
     } catch (error) {
-      res.status(400).json({ message: "token invalid!" });
+      res.status(400).json({ message: "Token invalid!" });
     }
   }
 }

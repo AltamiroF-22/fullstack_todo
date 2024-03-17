@@ -1,29 +1,31 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true
+    required: true,
   },
   email: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
   },
   password: {
     type: String,
-    required: true
+    required: true,
   },
   profilePicture: {
-    type: String, 
-    default: '../assets/img/default_img.webp' 
+    type: String,
+    required: false,
   },
-  friends: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
-  }]
+  friends: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+  ],
 });
 
-const User = mongoose.model('TodoUser', userSchema);
+const User = mongoose.model("TodoUser", userSchema);
 
 module.exports = User;

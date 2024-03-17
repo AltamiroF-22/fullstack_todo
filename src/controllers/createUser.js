@@ -7,6 +7,8 @@ const fs = require("fs");
 const UserModel = require("../models/User");
 
 class User {
+  //-------------------- create user--------------------------------
+
   async create(req, res) {
     const { name, email, password } = req.body;
     const salt = await bcrypt.genSalt(12);
@@ -17,7 +19,6 @@ class User {
         name: name,
         email: email,
         password: passwordHash,
-        // profilePicture: profilePicture.path,
       });
 
       await user.save();
@@ -30,6 +31,7 @@ class User {
     }
   }
 
+  //--------------------  login--------------------------------
   async login(req, res) {
     const { email } = req.body;
     const user = await UserModel.findOne({ email });
@@ -50,6 +52,7 @@ class User {
     }
   }
 
+  //-------------------- update picture--------------------------------
   async updatePicture(req, res) {
     const userId = req.params.id;
     const profilePicture = req.file;
@@ -60,17 +63,32 @@ class User {
         return res.status(404).json({ message: "User not found" });
       }
 
+      if (user.profilePicture) {
+        fs.unlinkSync(user.profilePicture);
+      }
+
       user.profilePicture = profilePicture.path;
       await user.save();
 
       res.status(200).json({ message: "Profile picture updated successfully" });
     } catch (error) {
-      res
-        .status(500)
-        .json({
-          message: "Error updating profile picture",
-          error: error.message,
-        });
+      res.status(500).json({
+        message: "Error updating profile picture",
+        error: error.message,
+      });
+    }
+  }
+
+  //-------------------- search user by name--------------------------------
+  async searchUsersByName(req, res) {
+    const { name } = req.query;
+  
+    try {
+      const users = await UserModel.find({ name: { $regex: new RegExp(name, "i") } });
+  
+      res.status(200).json({ users });
+    } catch (error) {
+      res.status(500).json({ message: "Error searching users", error: error.message });
     }
   }
 }
