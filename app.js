@@ -1,16 +1,22 @@
-require("./src/data/database");
+// Importações
 const express = require("express");
-const dotEnv = require("dotenv");
-const connectToDatbase = require("./src/data/database");
-connectToDatbase();
+const dotenv = require("dotenv");
+const connectToDatabase = require("./src/data/database");
+//routes
+const userRoutes = require("./src/routes/UserRoutes");
 
+// Configurações iniciais
 const app = express();
-dotEnv.config();
+dotenv.config();
+connectToDatabase();
 
-const user = require("./src/routes/UserRoutes");
+// Middlewares
+app.use(express.json());
+
+// Rotas
+app.use('/', userRoutes);
 
 
-app.use('/create-user', user)
-
-const PORT = 8080;
-app.listen(PORT, () => console.log(`http://localhost:${PORT}`));
+// Inicialização do servidor
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
