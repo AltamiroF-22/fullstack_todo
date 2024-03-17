@@ -31,6 +31,9 @@ router.get("/user-search", Token.check, UserController.searchUsersByName);
 //add friends
 router.put("/user-search", Token.check, UserController.addFriend);
 
+//remove friend
+router.delete("/remove-friend/:friendId", Token.check, UserController.removeFriend);
+
 // Update Img Profile
 router.patch(
   "/update-picture/:id",
@@ -48,7 +51,11 @@ router.get(
   Token.check,
   TaskController.getAllTaksFromUserId
 );
+
+// delete single task
 router.delete("/single-task/:id", Token.check, TaskController.deleteSingleTask);
+
+// update single task
 router.patch("/single-task/:id", Token.check, TaskController.updateSingleTask);
 
 module.exports = router;

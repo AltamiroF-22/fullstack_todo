@@ -122,6 +122,30 @@ class User {
         .json({ message: "Error adding friend", error: error.message });
     }
   }
+  
+  //-------------------- remove friend --------------------------------
+  async removeFriend(req, res) {
+    const userId = req.user.id; 
+    const friendId = req.params.friendId;
+
+    try {
+      const user = await UserModel.findById(userId);
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      
+      user.friends.pull(friendId);
+      await user.save();
+
+      res.status(200).json({ message: "Friend removed successfully" });
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: "Error removing friend", error: error.message });
+    }
+  }
 }
 
 module.exports = new User();
