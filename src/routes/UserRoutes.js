@@ -3,8 +3,8 @@ const router = express.Router();
 const upload = require("../config/multer");
 
 // controllers
-const UserController = require("../controllers/createUser");
-const TaskController = require("../controllers/createTasks");
+const UserController = require("../controllers/User");
+const TaskController = require("../controllers/Tasks");
 
 // middleware
 const UserMiddleware = require("../middlewares/userMiddleware");
@@ -31,8 +31,15 @@ router.get("/user-search", Token.check, UserController.searchUsersByName);
 //add friends
 router.put("/user-search", Token.check, UserController.addFriend);
 
+//get all friends by user id
+router.get("/user-friends/:id", Token.check, UserController.getAllFriends);
+
 //remove friend
-router.delete("/remove-friend/:friendId", Token.check, UserController.removeFriend);
+router.delete(
+  "/remove-friend/:friendId",
+  Token.check,
+  UserController.removeFriend
+);
 
 // Update Img Profile
 router.patch(

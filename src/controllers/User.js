@@ -122,10 +122,33 @@ class User {
         .json({ message: "Error adding friend", error: error.message });
     }
   }
-  
+
+  //-------------------- get all friends by id --------------------------------
+  async getAllFriends(req, res) {
+    const userId = req.params.id;
+
+    try {
+      // Encontre o usuário pelo ID
+      const user = await UserModel.findById(userId);
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Obtenha a lista de amigos do usuário
+      const friends = await UserModel.find({ _id: { $in: user.friends } });
+
+      res.status(200).json({ friends });
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: "Error fetching friends", error: error.message });
+    }
+  }
+
   //-------------------- remove friend --------------------------------
   async removeFriend(req, res) {
-    const userId = req.user.id; 
+    const userId = req.user.id;
     const friendId = req.params.friendId;
 
     try {
@@ -135,7 +158,6 @@ class User {
         return res.status(404).json({ message: "User not found" });
       }
 
-      
       user.friends.pull(friendId);
       await user.save();
 
