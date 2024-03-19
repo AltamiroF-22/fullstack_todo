@@ -80,15 +80,22 @@ class User {
   }
 
   //-------------------- search user by name--------------------------------
+
   async searchUsersByName(req, res) {
     const { name } = req.query;
+    const currentUser = req.user.id; // Supondo que o ID do usuário atual está disponível no objeto de requisição
 
     try {
       const users = await UserModel.find({
         name: { $regex: new RegExp(name, "i") },
       });
 
-      res.status(200).json({ users });
+      const usersWithFriendshipStatus = users.map((user) => {
+        const isFriend = user.friends.includes(currentUser);
+        return { ...user.toObject(), isFriend }; // Convertendo o documento Mongoose em objeto JavaScript para evitar a modificação do documento original
+      });
+
+      res.status(200).json({ users: usersWithFriendshipStatus });
     } catch (error) {
       res
         .status(500)
@@ -98,10 +105,10 @@ class User {
 
   //-------------------- add friend --------------------------------
   async addFriend(req, res) {
-    const { name } = req.query;
+    const id = req.params.id;
 
     try {
-      const newFriend = await UserModel.findOne({ name: name });
+      const newFriend = await UserModel.findById(id);
 
       if (!newFriend) {
         return res.status(404).json({ message: "User not found" });

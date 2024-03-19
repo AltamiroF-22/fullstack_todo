@@ -1,12 +1,15 @@
 // Importações
 const express = require("express");
 const dotenv = require("dotenv");
+const cors = require('cors')
 const connectToDatabase = require("./src/data/database");
 //routes
 const userRoutes = require("./src/routes/UserRoutes");
 
 // Configurações iniciais
 const app = express();
+app.use(cors());
+
 dotenv.config();
 connectToDatabase();
 

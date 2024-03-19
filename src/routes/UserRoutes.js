@@ -29,7 +29,7 @@ router.post("/login", UserMiddleware.checkLogin, UserController.login);
 router.get("/user-search", Token.check, UserController.searchUsersByName);
 
 //add friends
-router.put("/user-search", Token.check, UserController.addFriend);
+router.put("/user-search/:id", Token.check, UserController.addFriend);
 
 //get all friends by user id
 router.get("/user-friends/:id", Token.check, UserController.getAllFriends);
