@@ -28,6 +28,9 @@ router.post("/login", UserMiddleware.checkLogin, UserController.login);
 //search user
 router.get("/user-search", Token.check, UserController.searchUsersByName);
 
+//get user
+router.get('/user', Token.check, UserController.getUserById)
+
 //add friends
 router.put("/user-search/:id", Token.check, UserController.addFriend);
 

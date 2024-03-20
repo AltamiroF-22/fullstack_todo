@@ -103,6 +103,19 @@ class User {
     }
   }
 
+  // GET user by id
+  async getUserById(req, res) {
+    try {
+      const userId = req.user.id;
+  
+      const user = await UserModel.findById(userId);
+  
+      res.json({ user });
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  }
+
   //-------------------- add friend --------------------------------
   async addFriend(req, res) {
     const id = req.params.id;

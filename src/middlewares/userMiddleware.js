@@ -13,7 +13,10 @@ class UserMiddleware {
     if (password.length < 8) {
       return res
         .status(422)
-        .json({ message: "the password can't be less than 8 characters" });
+        .json({
+          field: "password",
+          message: "the password can't be less than 8 characters",
+        });
     }
 
     try {
@@ -21,7 +24,7 @@ class UserMiddleware {
       if (userEmailExist) {
         return res
           .status(409)
-          .json({ message: "this email is already in use" });
+          .json({ field: "email", message: "this email is already in use" });
       }
 
       next();
@@ -34,24 +37,30 @@ class UserMiddleware {
   async checkLogin(req, res, next) {
     const { email, password } = req.body;
     if (!email) {
-      return res.status(422).json({ message: "Email is required!" });
+      return res
+        .status(422)
+        .json({ field: "email", message: "Email is required!" });
     }
     if (!password) {
-      return res.status(422).json({ message: "Password is required!" });
+      return res
+        .status(422)
+        .json({ field: "password", message: "Password is required!" });
     }
 
     try {
       const user = await UserModel.findOne({ email });
 
       if (!user) {
-        return res.status(401).json({ message: "This user does not exist!" });
+        return res
+          .status(401)
+          .json({ field: "email", message: "This user does not exist!" });
       }
 
       const userPassword = await bcrypt.compare(password, user.password);
       if (!userPassword) {
         return res
           .status(401)
-          .json({ message: "the password is not matching" });
+          .json({ field: "password", message: "the password is not matching" });
       }
       next();
     } catch (error) {
