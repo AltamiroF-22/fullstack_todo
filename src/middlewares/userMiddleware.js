@@ -12,7 +12,7 @@ class UserMiddleware {
 
     if (password.length < 8) {
       return res.status(422).json({
-        field: "passwordRef",
+        field: "password",
         message: "the password can't be less than 8 characters",
       });
     }
@@ -22,7 +22,7 @@ class UserMiddleware {
       if (userEmailExist) {
         return res
           .status(409)
-          .json({ field: "emailRef", message: "this email is already in use" });
+          .json({ field: "email", message: "this email is already in use" });
       }
 
       next();
@@ -37,12 +37,12 @@ class UserMiddleware {
     if (!email) {
       return res
         .status(422)
-        .json({ field: "emailRef", message: "Email is required!" });
+        .json({ field: "email", message: "Email is required!" });
     }
     if (!password) {
       return res
         .status(422)
-        .json({ field: "passwordRef", message: "Password is required!" });
+        .json({ field: "password", message: "Password is required!" });
     }
 
     try {
@@ -51,14 +51,14 @@ class UserMiddleware {
       if (!user) {
         return res
           .status(401)
-          .json({ field: "emailRef", message: "This user does not exist!" });
+          .json({ field: "email", message: "This user does not exist!" });
       }
 
       const userPassword = await bcrypt.compare(password, user.password);
       if (!userPassword) {
         return res
           .status(401)
-          .json({ field: "passwordRef", message: "the password is not matching" });
+          .json({ field: "password", message: "the password is not matching" });
       }
       next();
     } catch (error) {
