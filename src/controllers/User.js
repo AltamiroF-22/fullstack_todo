@@ -83,18 +83,26 @@ class User {
 
   async searchUsersByName(req, res) {
     const { name } = req.query;
-    const currentUser = req.user.id; // Supondo que o ID do usuário atual está disponível no objeto de requisição
-
+    const currentUserID = req.user.id; // Supondo que o ID do usuário atual está disponível no objeto de requisição
+  
     try {
+      const currentUser = await UserModel.findById(currentUserID).exec();
+  
+      if (!currentUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+  
       const users = await UserModel.find({
         name: { $regex: new RegExp(name, "i") },
       });
-
+  
       const usersWithFriendshipStatus = users.map((user) => {
-        const isFriend = user.friends.includes(currentUser);
-        return { ...user.toObject(), isFriend }; // Convertendo o documento Mongoose em objeto JavaScript para evitar a modificação do documento original
+        // Verifica se o ID do usuário pesquisado está presente no array de amigos do usuário autenticado
+        const isFollowing = currentUser.friends && currentUser.friends.includes(user._id);
+  
+        return { ...user.toObject(), isFollowing }; // Convertendo o documento Mongoose em objeto JavaScript para evitar a modificação do documento original
       });
-
+  
       res.status(200).json({ users: usersWithFriendshipStatus });
     } catch (error) {
       res
@@ -102,14 +110,38 @@ class User {
         .json({ message: "Error searching users", error: error.message });
     }
   }
+  
+  
+// check if the users are friends
+  // async searchUsersByName(req, res) {
+  //   const { name } = req.query;
+  //   const currentUser = req.user.id; // Supondo que o ID do usuário atual está disponível no objeto de requisição
+
+  //   try {
+  //     const users = await UserModel.find({
+  //       name: { $regex: new RegExp(name, "i") },
+  //     });
+
+  //     const usersWithFriendshipStatus = users.map((user) => {
+  //       const isFriend = user.friends.includes(currentUser);
+  //       return { ...user.toObject(), isFriend }; // Convertendo o documento Mongoose em objeto JavaScript para evitar a modificação do documento original
+  //     });
+
+  //     res.status(200).json({ users: usersWithFriendshipStatus });
+  //   } catch (error) {
+  //     res
+  //       .status(500)
+  //       .json({ message: "Error searching users", error: error.message });
+  //   }
+  // }
 
   // GET user by id
   async getUserById(req, res) {
     try {
       const userId = req.user.id;
-  
+
       const user = await UserModel.findById(userId);
-  
+
       res.json({ user });
     } catch (error) {
       res.status(500).json({ message: "Internal server error" });
