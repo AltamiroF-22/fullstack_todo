@@ -1,7 +1,7 @@
 // Importações
 const express = require("express");
 const dotenv = require("dotenv");
-const cors = require('cors')
+const cors = require("cors");
 const connectToDatabase = require("./src/data/database");
 //routes
 const userRoutes = require("./src/routes/UserRoutes");

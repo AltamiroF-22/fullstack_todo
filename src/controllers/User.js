@@ -135,7 +135,7 @@ class User {
   //   }
   // }
 
-  // GET user by id
+  // GET user by id Authenticated
   async getUserById(req, res) {
     try {
       const userId = req.user.id;
@@ -147,6 +147,21 @@ class User {
       res.status(500).json({ message: "Internal server error" });
     }
   }
+
+  // GET user by id 
+
+  async getUserByIdParams(req, res) {
+    try {
+      const userId = req.params.id;
+
+      const user = await UserModel.findById(userId);
+
+      res.json({ user });
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  }
+
 
   //-------------------- add friend --------------------------------
   async addFriend(req, res) {

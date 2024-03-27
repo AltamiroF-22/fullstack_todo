@@ -28,8 +28,11 @@ router.post("/login", UserMiddleware.checkLogin, UserController.login);
 //search user
 router.get("/user-search", Token.check, UserController.searchUsersByName);
 
-//get user
+//get user Authenticated
 router.get('/user', Token.check, UserController.getUserById)
+
+//get user in req params id
+router.get('/others-users/:id', Token.check, UserController.getUserByIdParams)
 
 //add friends
 router.put("/user-search/:id", Token.check, UserController.addFriend);
